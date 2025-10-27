@@ -1,0 +1,65 @@
+Listado de rutas de carpetas
+El numero de serie del volumen es F4DC-33BA
+C:.
+|   dialog_engine.py
+|   field_engine.py
+|   intuition_layer.py
+|   knowledge_core.py
+|   learning_bridge.py
+|   logic_i1i2.py
+|   magic_field.py
+|   structure.txt
+|   vision_adapter.py
+|   __init__.py
+|   
++---dialog
+|   |   dialog.py
+|   |   dialog_engine.py
+|   |   __init__.py
+|   |   
+|   \---__pycache__
+|           dialog.cpython-39.pyc
+|           __init__.cpython-39.pyc
+|           
++---field
+|       field.py
+|       field_engine.py
+|       __init__.py
+|       
++---intuition
+|       intuition.py
+|       intuition_layer.py
+|       knowledge_core.py
+|       learning_bridge.py
+|       __init__.py
+|       
++---logic
+|   |   logic.py
+|   |   logic_i1i2.py
+|   |   __init__.py
+|   |   
+|   \---__pycache__
+|           logic.cpython-39.pyc
+|           __init__.cpython-39.pyc
+|           
++---maintenance
+|       maintenance.py
+|       __init__.py
+|       
++---scheduler
+|   |   scheduler.py
+|   |   __init__.py
+|   |   
+|   \---__pycache__
+|           scheduler.cpython-39.pyc
+|           __init__.cpython-39.pyc
+|           
++---vision
+|       vision.py
+|       vision_adapter.py
+|       __init__.py
+|       
+\---__pycache__
+        magic_field.cpython-39.pyc
+        __init__.cpython-39.pyc
+        

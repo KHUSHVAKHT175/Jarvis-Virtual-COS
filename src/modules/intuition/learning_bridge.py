@@ -1,0 +1,2 @@
+class LearningBridge:
+    pass

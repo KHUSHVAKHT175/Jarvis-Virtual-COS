@@ -1,0 +1,2 @@
+class VisionAdapter: 
+    pass 

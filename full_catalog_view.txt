@@ -1,0 +1,796 @@
+============================== 
+FILE: C:\Users\usuario\Jarvis-COS-Minimal\requirements.txt 
+============================== 
+# ��������� ����ᨬ���
+# ���ਬ��: none
+ 
+============================== 
+FILE: C:\Users\usuario\Jarvis-COS-Minimal\structure.txt 
+============================== 
+Listado de rutas de carpetas
+El numero de serie del volumen es F4DC-33BA
+C:.
+|   .gitignore
+|   10
+|   README.md
+|   requirements.txt
+|   s
+|   structure.txt
+|   
++---src
+|   |   main.py
+|   |   main1.py
+|   |   maintenance.py
+|   |   
+|   +---core
+|   |       command_parser.py
+|   |       error_corrector.py
+|   |       io_core.py
+|   |       main.py
+|   |       memory_engine.py
+|   |       memory_state.json
+|   |       process_core.py
+|   |       resource_manager.py
+|   |       scheduler.py
+|   |       security_shell.py
+|   |       system_log.py
+|   |       
+|   +---modules
+|   |   |   dialog_engine.py
+|   |   |   field_engine.py
+|   |   |   intuition_layer.py
+|   |   |   knowledge_core.py
+|   |   |   learning_bridge.py
+|   |   |   logic_i1i2.py
+|   |   |   magic_field.py
+|   |   |   structure.txt
+|   |   |   vision_adapter.py
+|   |   |   __init__.py
+|   |   |   
+|   |   +---dialog
+|   |   |   |   dialog.py
+|   |   |   |   dialog_engine.py
+|   |   |   |   __init__.py
+|   |   |   |   
+|   |   |   \---__pycache__
+|   |   |           dialog.cpython-39.pyc
+|   |   |           __init__.cpython-39.pyc
+|   |   |           
+|   |   +---field
+|   |   |       field.py
+|   |   |       field_engine.py
+|   |   |       __init__.py
+|   |   |       
+|   |   +---intuition
+|   |   |       intuition.py
+|   |   |       intuition_layer.py
+|   |   |       knowledge_core.py
+|   |   |       learning_bridge.py
+|   |   |       __init__.py
+|   |   |       
+|   |   +---logic
+|   |   |   |   logic.py
+|   |   |   |   logic_i1i2.py
+|   |   |   |   __init__.py
+|   |   |   |   
+|   |   |   \---__pycache__
+|   |   |           logic.cpython-39.pyc
+|   |   |           __init__.cpython-39.pyc
+|   |   |           
+|   |   +---maintenance
+|   |   |       maintenance.py
+|   |   |       __init__.py
+|   |   |       
+|   |   +---scheduler
+|   |   |   |   scheduler.py
+|   |   |   |   __init__.py
+|   |   |   |   
+|   |   |   \---__pycache__
+|   |   |           scheduler.cpython-39.pyc
+|   |   |           __init__.cpython-39.pyc
+|   |   |           
+|   |   +---vision
+|   |   |       vision.py
+|   |   |       vision_adapter.py
+|   |   |       __init__.py
+|   |   |       
+|   |   \---__pycache__
+|   |           magic_field.cpython-39.pyc
+|   |           __init__.cpython-39.pyc
+|   |           
+|   \---src
+|       \---core
+|               memory_state.json
+|               
+\---tests
+        test_core.py
+        
+ 
+============================== 
+FILE: C:\Users\usuario\Jarvis-COS-Minimal\README.md 
+============================== 
+# Jarvis-COS Minimal
+�������쭠� ����� Jarvis COS ��� CPU + 8GB RAM.
+ 
+============================== 
+FILE: C:\Users\usuario\Jarvis-COS-Minimal\src\main.py 
+============================== 
+import os
+import json
+
+# ----------------------------
+# Импорты минимальных модулей
+# ----------------------------
+from modules.dialog.dialog import Dialog as DialogModule
+from modules.scheduler.scheduler import SchedulerModule
+from modules.logic.logic import LogicModule
+
+# ----------------------------
+# Настройки и реестры
+# ----------------------------
+module_registry = {
+    "Dialog": "modules.dialog.dialog",
+    "Scheduler": "modules.scheduler.scheduler",
+    "Logic": "modules.logic.logic"
+}
+
+age_requirements = {
+    "Dialog": 0,
+    "Scheduler": 0,
+    "Logic": 0
+}
+
+MEMORY_FILE = "src/core/memory_state.json"
+
+# ----------------------------
+# Memory
+# ----------------------------
+class HybridMemory:
+    def __init__(self):
+        if os.path.exists(MEMORY_FILE):
+            with open(MEMORY_FILE, "r", encoding="utf-8") as f:
+                try:
+                    saved = json.load(f)
+                except Exception:
+                    saved = {}
+            self.cache = saved.get("cache", {})
+            self.archive = saved.get("archive", {})
+            self.weights = saved.get("weights", {})
+        else:
+            self.cache = {}
+            self.archive = {}
+            self.weights = {}
+
+    def store(self, task, result):
+        self.cache[task["name"]] = result
+        self.weights[task["name"]] = self.weights.get(task["name"], 1.0) + 0.1
+        if len(self.cache) > 10:
+            key, val = self.cache.popitem()
+            self.archive[key] = val
+        self.save()
+
+    def get(self, key):
+        return self.cache.get(key) or self.archive.get(key)
+
+    def save(self):
+        state = {"cache": self.cache, "archive": self.archive, "weights": self.weights}
+        os.makedirs(os.path.dirname(MEMORY_FILE), exist_ok=True)
+        with open(MEMORY_FILE, "w", encoding="utf-8") as f:
+            json.dump(state, f, ensure_ascii=False, indent=2)
+
+    def clear_all(self):
+        self.cache = {}
+        self.archive = {}
+        self.weights = {}
+        self.save()
+
+# ----------------------------
+# Main
+# ----------------------------
+def main():
+    print("=" * 32)
+    print(" JARVIS‑COS Minimal: Терминальный запуск")
+    print("=" * 32)
+    try:
+        user_age = int(input("Введите возраст пользователя: "))
+    except Exception:
+        user_age = 0
+
+    # Подключаем минимальные модули
+    modules = {
+        "Dialog": DialogModule,
+        "Scheduler": SchedulerModule,
+        "Logic": LogicModule
+    }
+
+    memory = HybridMemory()
+
+    print(f"\n[Jarvis‑COS] Модули: {list(modules.keys())}")
+    print("Команды: 'chat', 'schedule', 'think', 'status', 'exit'\n")
+
+    while True:
+        cmd = input("Jarvis‑COS> ").strip()
+        if cmd == "chat":
+            if modules.get("Dialog"):
+                modules["Dialog"].chat(memory)
+            else:
+                print("[Jarvis‑COS] Модуль Dialog не доступен.")
+        elif cmd == "schedule":
+            if modules.get("Scheduler"):
+                modules["Scheduler"]().schedule()
+            else:
+                print("[Jarvis‑COS] Модуль Scheduler не доступен.")
+        elif cmd == "think":
+            if modules.get("Logic"):
+                modules["Logic"]().think()
+            else:
+                print("[Jarvis‑COS] Модуль Logic не доступен.")
+        elif cmd == "status":
+            print(f"[Memory] Cache: {list(memory.cache.keys())}")
+            print(f"[Memory] Archive: {list(memory.archive.keys())}")
+        elif cmd == "magic":
+            from modules.magic_field import MagicField
+            MagicField().guess_number()
+
+        elif cmd in ("exit", "shutdown", "stop"):
+            print("[Jarvis‑COS Minimal] Завершение работы. Goodbye!")
+            break
+        else:
+            print("[Jarvis‑COS Minimal] Только 'chat', 'schedule', 'think', 'status' или 'exit'.")
+
+if __name__ == "__main__":
+    main()
+ 
+============================== 
+FILE: C:\Users\usuario\Jarvis-COS-Minimal\src\main1.py 
+============================== 
+import json
+import os
+
+# Минимальный реестр модулей
+module_registry = {
+    "Dialog": "modules.dialog.dialog",
+    "Scheduler": "modules.scheduler.scheduler",
+    "Logic": "modules.logic.logic"
+}
+
+age_requirements = {
+    "Dialog": 0,
+    "Scheduler": 0,
+    "Logic": 0
+}
+
+MEMORY_FILE = "src/core/memory_state.json"
+
+# ---------------- Memory ----------------
+class HybridMemory:
+    def __init__(self):
+        if os.path.exists(MEMORY_FILE):
+            with open(MEMORY_FILE, "r", encoding="utf-8") as f:
+                try:
+                    saved = json.load(f)
+                except Exception:
+                    saved = {}
+            self.cache = saved.get("cache", {})
+            self.archive = saved.get("archive", {})
+            self.weights = saved.get("weights", {})
+        else:
+            self.cache = {}
+            self.archive = {}
+            self.weights = {}
+
+    def store(self, task, result):
+        self.cache[task["name"]] = result
+        self.weights[task["name"]] = self.weights.get(task["name"], 1.0) + 0.1
+        if len(self.cache) > 10:
+            key, val = self.cache.popitem()
+            self.archive[key] = val
+        self.save()
+
+    def get(self, key):
+        return self.cache.get(key) or self.archive.get(key)
+
+    def save(self):
+        state = {
+            "cache": self.cache,
+            "archive": self.archive,
+            "weights": self.weights
+        }
+        os.makedirs(os.path.dirname(MEMORY_FILE), exist_ok=True)
+        with open(MEMORY_FILE, "w", encoding="utf-8") as f:
+            json.dump(state, f, ensure_ascii=False, indent=2)
+
+    def clear_all(self):
+        self.cache = {}
+        self.archive = {}
+        self.weights = {}
+        self.save()
+
+# ---------------- Module Loader ----------------
+def load_allowed_modules(user_age):
+    allowed = {}
+    for name, path in module_registry.items():
+        if user_age >= age_requirements.get(name, 0):
+            try:
+                mod = __import__(path, fromlist=[""])
+                allowed[name] = mod
+            except Exception:
+                allowed[name] = None
+    return allowed
+
+# ---------------- Main ----------------
+def main():
+    print("=" * 32)
+    print(" JARVIS‑COS Minimal: Терминальный запуск")
+    print("=" * 32)
+
+    try:
+        user_age = int(input("Введите возраст пользователя: "))
+    except Exception:
+        user_age = 0
+
+    modules = load_allowed_modules(user_age)
+    memory = HybridMemory()
+
+    print(f"\n[Jarvis‑COS] Модули: {list(modules.keys())}")
+    print("Команды: 'chat', 'schedule', 'think', 'status', 'exit'\n")
+
+    while True:
+        cmd = input("Jarvis‑COS> ").strip().lower()
+
+        if cmd == "chat":
+            dialog_module = modules.get("Dialog")
+            if dialog_module:
+                try:
+                    dialog_module.DialogModule().chat(memory)
+                except Exception as e:
+                    print(f"[Jarvis‑COS] Ошибка модуля Dialog: {e}")
+            else:
+                print("[Jarvis‑COS] Модуль Dialog не доступен.")
+
+        elif cmd == "schedule":
+            sched_module = modules.get("Scheduler")
+            if sched_module:
+                try:
+                    sched_module.SchedulerModule().schedule()
+                except Exception as e:
+                    print(f"[Jarvis‑COS] Ошибка модуля Scheduler: {e}")
+            else:
+                print("[Jarvis‑COS] Модуль Scheduler не доступен.")
+
+        elif cmd == "think":
+            logic_module = modules.get("Logic")
+            if logic_module:
+                try:
+                    logic_module.LogicModule().think()
+                except Exception as e:
+                    print(f"[Jarvis‑COS] Ошибка модуля Logic: {e}")
+            else:
+                print("[Jarvis‑COS] Модуль Logic не доступен.")
+
+        elif cmd == "status":
+            print(f"[Memory] Cache: {list(memory.cache.keys())}")
+            print(f"[Memory] Archive: {list(memory.archive.keys())}")
+
+        elif cmd in ("exit", "shutdown", "stop"):
+            print("[Jarvis‑COS Minimal] Завершение работы. Goodbye!")
+            break
+
+        else:
+            print("[Jarvis‑COS Minimal] Только 'chat', 'schedule', 'think', 'status' или 'exit'.")
+
+if __name__ == "__main__":
+    main()
+ 
+============================== 
+FILE: C:\Users\usuario\Jarvis-COS-Minimal\src\maintenance.py 
+============================== 
+class MaintenanceModule:
+    pass
+ 
+============================== 
+FILE: C:\Users\usuario\Jarvis-COS-Minimal\src\core\command_parser.py 
+============================== 
+class CommandParser:
+    pass
+ 
+============================== 
+FILE: C:\Users\usuario\Jarvis-COS-Minimal\src\core\error_corrector.py 
+============================== 
+class ErrorCorrector:
+    pass
+ 
+============================== 
+FILE: C:\Users\usuario\Jarvis-COS-Minimal\src\core\io_core.py 
+============================== 
+class IOCore:
+    pass
+ 
+============================== 
+FILE: C:\Users\usuario\Jarvis-COS-Minimal\src\core\main.py 
+============================== 
+import json
+import os
+
+MEMORY_FILE = "src/core/memory_state.json"
+
+class HybridMemory:
+    def __init__(self):
+        if os.path.exists(MEMORY_FILE):
+            with open(MEMORY_FILE, "r", encoding="utf-8") as f:
+                try:
+                    saved = json.load(f)
+                except Exception:
+                    saved = {}
+            self.cache = saved.get("cache", {})
+            self.archive = saved.get("archive", {})
+            self.weights = saved.get("weights", {})
+        else:
+            self.cache = {}
+            self.archive = {}
+            self.weights = {}
+ 
+============================== 
+FILE: C:\Users\usuario\Jarvis-COS-Minimal\src\core\memory_engine.py 
+============================== 
+class MemoryEngine:
+    pass
+ 
+============================== 
+FILE: C:\Users\usuario\Jarvis-COS-Minimal\src\core\process_core.py 
+============================== 
+class ProcessCore:
+    pass
+ 
+============================== 
+FILE: C:\Users\usuario\Jarvis-COS-Minimal\src\core\resource_manager.py 
+============================== 
+class ResourceManager:
+    pass
+ 
+============================== 
+FILE: C:\Users\usuario\Jarvis-COS-Minimal\src\core\scheduler.py 
+============================== 
+class Scheduler:
+    pass
+ 
+============================== 
+FILE: C:\Users\usuario\Jarvis-COS-Minimal\src\core\security_shell.py 
+============================== 
+class SecurityShell:
+    pass
+ 
+============================== 
+FILE: C:\Users\usuario\Jarvis-COS-Minimal\src\core\system_log.py 
+============================== 
+class SystemLog:
+    pass
+ 
+============================== 
+FILE: C:\Users\usuario\Jarvis-COS-Minimal\src\core\memory_state.json 
+============================== 
+{}
+ 
+============================== 
+FILE: C:\Users\usuario\Jarvis-COS-Minimal\src\modules\dialog_engine.py 
+============================== 
+class DialogModule:
+    def chat(self, memory):
+        print("������: ����� ����饭. (᪥��⮭)")
+ 
+============================== 
+FILE: C:\Users\usuario\Jarvis-COS-Minimal\src\modules\field_engine.py 
+============================== 
+class FieldEngine:
+    pass
+ 
+============================== 
+FILE: C:\Users\usuario\Jarvis-COS-Minimal\src\modules\intuition_layer.py 
+============================== 
+class IntuitionLayer:
+    pass
+ 
+============================== 
+FILE: C:\Users\usuario\Jarvis-COS-Minimal\src\modules\knowledge_core.py 
+============================== 
+class KnowledgeCore:
+    pass
+ 
+============================== 
+FILE: C:\Users\usuario\Jarvis-COS-Minimal\src\modules\learning_bridge.py 
+============================== 
+class LearningBridge:
+    pass
+ 
+============================== 
+FILE: C:\Users\usuario\Jarvis-COS-Minimal\src\modules\logic_i1i2.py 
+============================== 
+class LogicModule:
+    def think(self):
+ 
+============================== 
+FILE: C:\Users\usuario\Jarvis-COS-Minimal\src\modules\magic_field.py 
+============================== 
+import random
+import json
+import os
+
+MEMORY_FILE = "src/core/memory_state.json"
+
+class MagicField:
+    def __init__(self):
+        self.attempts = 0
+        self.success = 0
+        self.memory = self.load_memory()
+
+    def load_memory(self):
+        if os.path.exists(MEMORY_FILE):
+            try:
+                with open(MEMORY_FILE, "r", encoding="utf-8") as f:
+                    data = json.load(f)
+                    return data.get("magic_field", {"intuition_bias": 0.5})
+            except Exception:
+                return {"intuition_bias": 0.5}
+        return {"intuition_bias": 0.5}
+
+    def save_memory(self):
+        if os.path.exists(MEMORY_FILE):
+            with open(MEMORY_FILE, "r", encoding="utf-8") as f:
+                data = json.load(f)
+        else:
+            data = {}
+        data["magic_field"] = self.memory
+        os.makedirs(os.path.dirname(MEMORY_FILE), exist_ok=True)
+        with open(MEMORY_FILE, "w", encoding="utf-8") as f:
+            json.dump(data, f, ensure_ascii=False, indent=2)
+
+    def guess_number(self):
+        print("[Jarvis-COS Magic] Запуск интуитивного поля угадывания.")
+        print("Загадай число от 1 до 9. (не говори)")
+        bias = self.memory.get("intuition_bias", 0.5)
+        while True:
+            n = random.randint(1, 9)
+            print(f"[Logic] Пробую почувствовать... может быть {n}?")
+            resp = input("Попал? (y/n): ").strip().lower()
+            self.attempts += 1
+            if resp == "y":
+                print("[Jarvis-COS] Отлично! Я учту это в памяти поля.")
+                self.success += 1
+                self.memory["intuition_bias"] = min(1.0, bias + 0.05)
+                self.save_memory()
+                break
+            elif resp == "n":
+                print("[Logic] Ловлю другой поток... пробую снова.")
+                bias = max(0.1, bias - 0.01)
+            else:
+                print("[System] Введите только 'y' или 'n'.")
+ 
+============================== 
+FILE: C:\Users\usuario\Jarvis-COS-Minimal\src\modules\vision_adapter.py 
+============================== 
+class VisionAdapter:
+    pass
+ 
+============================== 
+FILE: C:\Users\usuario\Jarvis-COS-Minimal\src\modules\__init__.py 
+============================== 
+
+ 
+============================== 
+FILE: C:\Users\usuario\Jarvis-COS-Minimal\src\modules\structure.txt 
+============================== 
+Listado de rutas de carpetas
+El numero de serie del volumen es F4DC-33BA
+C:.
+|   dialog_engine.py
+|   field_engine.py
+|   intuition_layer.py
+|   knowledge_core.py
+|   learning_bridge.py
+|   logic_i1i2.py
+|   magic_field.py
+|   structure.txt
+|   vision_adapter.py
+|   __init__.py
+|   
++---dialog
+|   |   dialog.py
+|   |   dialog_engine.py
+|   |   __init__.py
+|   |   
+|   \---__pycache__
+|           dialog.cpython-39.pyc
+|           __init__.cpython-39.pyc
+|           
++---field
+|       field.py
+|       field_engine.py
+|       __init__.py
+|       
++---intuition
+|       intuition.py
+|       intuition_layer.py
+|       knowledge_core.py
+|       learning_bridge.py
+|       __init__.py
+|       
++---logic
+|   |   logic.py
+|   |   logic_i1i2.py
+|   |   __init__.py
+|   |   
+|   \---__pycache__
+|           logic.cpython-39.pyc
+|           __init__.cpython-39.pyc
+|           
++---maintenance
+|       maintenance.py
+|       __init__.py
+|       
++---scheduler
+|   |   scheduler.py
+|   |   __init__.py
+|   |   
+|   \---__pycache__
+|           scheduler.cpython-39.pyc
+|           __init__.cpython-39.pyc
+|           
++---vision
+|       vision.py
+|       vision_adapter.py
+|       __init__.py
+|       
+\---__pycache__
+        magic_field.cpython-39.pyc
+        __init__.cpython-39.pyc
+        
+ 
+============================== 
+FILE: C:\Users\usuario\Jarvis-COS-Minimal\src\modules\dialog\dialog.py 
+============================== 
+# src/modules/dialog/dialog.py
+class Dialog:
+    @staticmethod
+    def chat(memory):
+        print("[Dialog] Модуль запущен.")
+        user_input = input("Введите сообщение: ")
+        print(f"[Dialog] Вы сказали: {user_input}")
+        # можно сохранять в память
+        memory.store({"name": "last_chat"}, user_input)
+ 
+============================== 
+FILE: C:\Users\usuario\Jarvis-COS-Minimal\src\modules\dialog\dialog_engine.py 
+============================== 
+class DialogModule:
+    def chat(self, memory):
+        print("������: ����� ����饭. (᪥��⮭)")
+ 
+============================== 
+FILE: C:\Users\usuario\Jarvis-COS-Minimal\src\modules\dialog\__init__.py 
+============================== 
+
+ 
+============================== 
+FILE: C:\Users\usuario\Jarvis-COS-Minimal\src\modules\field\field.py 
+============================== 
+class FieldEngine: 
+    pass 
+ 
+============================== 
+FILE: C:\Users\usuario\Jarvis-COS-Minimal\src\modules\field\field_engine.py 
+============================== 
+class FieldEngine:
+    pass
+ 
+============================== 
+FILE: C:\Users\usuario\Jarvis-COS-Minimal\src\modules\field\__init__.py 
+============================== 
+
+ 
+============================== 
+FILE: C:\Users\usuario\Jarvis-COS-Minimal\src\modules\intuition\intuition.py 
+============================== 
+class IntuitionLayer: 
+    pass 
+ 
+============================== 
+FILE: C:\Users\usuario\Jarvis-COS-Minimal\src\modules\intuition\intuition_layer.py 
+============================== 
+class IntuitionLayer:
+    pass
+ 
+============================== 
+FILE: C:\Users\usuario\Jarvis-COS-Minimal\src\modules\intuition\knowledge_core.py 
+============================== 
+class KnowledgeCore:
+    pass
+ 
+============================== 
+FILE: C:\Users\usuario\Jarvis-COS-Minimal\src\modules\intuition\learning_bridge.py 
+============================== 
+class LearningBridge:
+    pass
+ 
+============================== 
+FILE: C:\Users\usuario\Jarvis-COS-Minimal\src\modules\intuition\__init__.py 
+============================== 
+
+ 
+============================== 
+FILE: C:\Users\usuario\Jarvis-COS-Minimal\src\modules\logic\logic.py 
+============================== 
+class LogicModule: 
+    def think(self): 
+        print("Логика: модуль запущен.") 
+ 
+============================== 
+FILE: C:\Users\usuario\Jarvis-COS-Minimal\src\modules\logic\logic_i1i2.py 
+============================== 
+class LogicModule:
+    def think(self):
+        print("������: ����� ����饭. (᪥��⮭)")
+ 
+============================== 
+FILE: C:\Users\usuario\Jarvis-COS-Minimal\src\modules\logic\__init__.py 
+============================== 
+
+ 
+============================== 
+FILE: C:\Users\usuario\Jarvis-COS-Minimal\src\modules\maintenance\maintenance.py 
+============================== 
+class MaintenanceModule: 
+    pass 
+ 
+============================== 
+FILE: C:\Users\usuario\Jarvis-COS-Minimal\src\modules\maintenance\__init__.py 
+============================== 
+
+ 
+============================== 
+FILE: C:\Users\usuario\Jarvis-COS-Minimal\src\modules\scheduler\scheduler.py 
+============================== 
+class SchedulerModule:
+    def schedule(self):
+        print("Планировщик: модуль запущен.") 
+============================== 
+FILE: C:\Users\usuario\Jarvis-COS-Minimal\src\modules\scheduler\__init__.py 
+============================== 
+
+ 
+============================== 
+FILE: C:\Users\usuario\Jarvis-COS-Minimal\src\modules\vision\vision.py 
+============================== 
+class VisionAdapter: 
+    pass 
+ 
+============================== 
+FILE: C:\Users\usuario\Jarvis-COS-Minimal\src\modules\vision\vision_adapter.py 
+============================== 
+class VisionAdapter:
+    pass
+ 
+============================== 
+FILE: C:\Users\usuario\Jarvis-COS-Minimal\src\modules\vision\__init__.py 
+============================== 
+
+ 
+============================== 
+FILE: C:\Users\usuario\Jarvis-COS-Minimal\src\src\core\memory_state.json 
+============================== 
+{
+  "cache": {
+    "last_chat": "привет"
+  },
+  "archive": {},
+  "weights": {
+    "last_chat": 1.1
+  },
+  "magic_field": {
+    "intuition_bias": 0.36999999999999966
+  }
+} 
+============================== 
+FILE: C:\Users\usuario\Jarvis-COS-Minimal\tests\test_core.py 
+============================== 
+print("����: core ����� ࠡ�⠥�") 
+ 
