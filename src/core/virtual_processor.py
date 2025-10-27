@@ -1,101 +1,59 @@
 class VirtualProcessor:
-    def __init__(self, name, memory_size=1024, num_registers=8):
+    def __init__(self, name):
         self.name = name
-        self.memory = bytearray(memory_size)
-        self.registers = [0] * num_registers
-        self.stack = []
-        self.ip = 0  # instruction pointer
-        self.priority = 1
-        self.state = 'ready'
-        self.context = {}
+        self.registers = [0] * 10
+        self.memory = {}
+        self.virtual_time = 0  # Виртуальные "такт. циклы"
+        self.last_cmp = False
 
-    def start(self):
-        self.state = 'running'
+    def process_instruction(self, instr):
+        op = instr['op']
+        args = instr.get('args', [])
+
+        # Моделируем стоимость операций
+        if op == "MUL":
+            self.virtual_time += 10
+        elif op == "ADD":
+            self.virtual_time += 1
+        elif op == "LOAD":
+            self.virtual_time += 2
+        elif op == "STORE":
+            self.virtual_time += 2
+        else:
+            self.virtual_time += 1
+
+        if op == "SET":
+            self.registers[args[0]] = args[1]
+        elif op == "ADD":
+            self.registers[args[0]] = self.registers[args[1]] + self.registers[args[2]]
+        elif op == "MUL":
+            self.registers[args[0]] = self.registers[args[1]] * self.registers[args[2]]
+        elif op == "LOAD":
+            self.registers[args[0]] = self.memory.get(args[1], 0)
+        elif op == "STORE":
+            self.memory[args[1]] = self.registers[args[0]]
+        elif op == "INPUT":
+            self.registers[args[0]] = int(input(f"[{self.name}] INPUT: "))
+        elif op == "PRINT":
+            print(f"[{self.name}] PRINT: {self.registers[args[0]]}")
+        elif op == "CMP":
+            self.last_cmp = self.registers[args[0]] == self.registers[args[1]]
+        elif op == "JMP_IF":
+            if self.last_cmp:
+                return args[0]
+        return None
 
     def execute(self, instructions):
-        self.start()
-        for inst in instructions:
-            self.process_instruction(inst)
-
-    def process_instruction(self, inst):
-        # Простейший эмулятор инструкций
-        op = inst.get('op')
-        args = inst.get('args', [])
-        if op == 'PUSH':
-            self.stack.append(args[0])
-        elif op == 'POP':
-            if self.stack:
-                self.registers[args[0]] = self.stack.pop()
-        elif op == 'ADD':
-            # ADD r0, r1, r2: r0 = r1 + r2
-            self.registers[args[0]] = self.registers[args[1]] + self.registers[args[2]]
-        elif op == 'LOAD':
-            # LOAD r0, addr
-            addr = args[1]
-            self.registers[args[0]] = self.memory[addr]
-        elif op == 'STORE':
-            # STORE addr, r0
-            addr = args[0]
-            self.memory[addr] = self.registers[args[1]]
-        elif op == 'SET':
-            # SET r0, val
-            self.registers[args[0]] = args[1]
-        # ... можно расширять другими операциями
-        elif op == 'SUB':
-            self.registers[args[0]] = self.registers[args[1]] - self.registers[args[2]]
-        elif op == 'MUL':
-            self.registers[args[0]] = self.registers[args[1]] * self.registers[args[2]]
-        elif op == 'DIV':
-            self.registers[args[0]] = int(self.registers[args[1]] / (self.registers[args[2]] or 1))
-        elif op == 'CMP':
-            self.context['cmp'] = (self.registers[args[0]] == self.registers[args[1]])
-        elif op == 'JMP_IF':
-            if self.context.get('cmp'):
-                self.ip = args[0]
-        elif op == 'PRINT':
-            print(f"[{self.name}] PRINT:", self.registers[args[0]])
-        elif op == 'INPUT':
-            val = int(input(f"[{self.name}] INPUT: "))
-            self.registers[args[0]] = val
-        elif op == 'SLEEP':
-            import time; time.sleep(args[0])
-        elif op == 'EVENT':
-            if 'events' not in self.context:
-                self.context['events'] = []
-            self.context['events'].append({'name': args[0], 'data': args[1]})
-
-    def snapshot(self):
-        return {
-            'name': self.name,
-            'memory': bytes(self.memory),
-            'registers': list(self.registers),
-            'stack': list(self.stack),
-            'ip': self.ip,
-            'priority': self.priority,
-            'state': self.state,
-            'context': self.context.copy()
-        }
-
-    def restore(self, snapshot):
-        self.name = snapshot.get('name', self.name)
-        self.memory = bytearray(snapshot.get('memory', self.memory))
-        self.registers = list(snapshot.get('registers', self.registers))
-        self.stack = list(snapshot.get('stack', self.stack))
-        self.ip = snapshot.get('ip', self.ip)
-        self.priority = snapshot.get('priority', self.priority)
-        self.state = snapshot.get('state', self.state)
-        self.context = dict(snapshot.get('context', {}))
-
-    def pause(self):
-        self.state = 'paused'
-
-    def migrate(self, new_priority):
-        self.priority = new_priority
-        self.state = 'migrated'
-
-    def destroy(self):
-        self.state = 'destroyed'
-        self.memory = bytearray()
-        self.stack.clear()
-        self.registers = [0] * len(self.registers)
-        self.context.clear()
+        import time
+        self.virtual_time = 0
+        real_start = time.time()
+        i = 0
+        while i < len(instructions):
+            jump = self.process_instruction(instructions[i])
+            if jump is not None:
+                i = jump
+            else:
+                i += 1
+        real_end = time.time()
+        print(f"[{self.name}] Реальное время: {real_end-real_start:.3f} сек")
+        print(f"[{self.name}] Виртуальное время: {self.virtual_time} тактов")

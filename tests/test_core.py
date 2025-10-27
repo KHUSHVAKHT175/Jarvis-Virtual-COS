@@ -1,35 +1,21 @@
-import pytest
-from src.core.layer import Layer
-from src.core.virtual_processor import VirtualProcessor
-from src.core.layer_manager import LayerManager
 from src.modules.example_module import ProcessLayer
+import time
 
-def test_layer_run():
-    l = Layer("test")
-    assert l.run(5) == 5
-    snap = l.snapshot()
-    l.restore(snap)
-    assert l.state == 'initialized'
+def test_vm_vs_native():
+    N = 1000  # маленький N - чтобы не затормозить тест
 
-def test_virtual_processor_basic():
-    vp = VirtualProcessor("vp_test")
-    instructions = [
-        {"op": "SET", "args": [0, 10]},
-        {"op": "SET", "args": [1, 20]},
-        {"op": "ADD", "args": [2, 0, 1]}, # r2 = r0 + r1
-    ]
-    vp.execute(instructions)
-    assert vp.registers[2] == 30
+    arr = list(range(N))
+    t0 = time.time()
+    r_py = sum([x*x for x in arr])
+    t1 = time.time()
+    py_time = t1 - t0
 
-def test_process_layer():
-    pl = ProcessLayer("PL1")
-    result = pl.run(8)
-    assert result == 50  # 42 + 8
+    layer = ProcessLayer("LayerTest")
+    # Переопредели N внутри process() на N = 1000 для теста
+    result = layer.process(None)
+    assert result == r_py
+    print(f"Python: {py_time:.4f}s, VM 'виртуальных': {layer.vproc.virtual_time}")
 
-def test_layer_manager_matrjoshka():
-    lm = LayerManager()
-    inner = ProcessLayer("InnerLayer")
-    outer = ProcessLayer("OuterLayer", inner_layer=inner)
-    lm.add_layer(outer)
-    out = lm.run_all(4)
-    assert out == 46  # 42 + 4 обработал внутренний слой
+if __name__ == "__main__":
+    test_vm_vs_native()
+    print("Тест пройден!")

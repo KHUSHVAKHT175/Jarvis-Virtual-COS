@@ -3,17 +3,14 @@ from src.modules.example_module import ProcessLayer
 
 if __name__ == "__main__":
     lm = LayerManager()
+    outer = ProcessLayer("OuterLayer")
     inner = ProcessLayer("InnerLayer")
-    outer = ProcessLayer("OuterLayer", inner_layer=inner)
     lm.add_layer(outer)
+    lm.add_layer(inner)
 
-    print("Введите число для обработки слоями-матрёшками:")
-    try:
-        val = int(input("> "))
-    except Exception:
-        val = 0
+    print("Тест: процессороёмкая задача — сумма квадратов N чисел.")
+    result = lm.run_all(None)  # None — вход не нужен для теста
 
-    result = lm.run_all(val)
-    print(f"Результат работы матрёшечных слоёв: {result}")
+    print(f"\nФинальный результат через VM: {result}")
     print("\nСнимок состояния:")
     print(lm.snapshot_all())
