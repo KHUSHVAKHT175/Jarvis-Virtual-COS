@@ -41,6 +41,28 @@ class VirtualProcessor:
             # SET r0, val
             self.registers[args[0]] = args[1]
         # ... можно расширять другими операциями
+        elif op == 'SUB':
+            self.registers[args[0]] = self.registers[args[1]] - self.registers[args[2]]
+        elif op == 'MUL':
+            self.registers[args[0]] = self.registers[args[1]] * self.registers[args[2]]
+        elif op == 'DIV':
+            self.registers[args[0]] = int(self.registers[args[1]] / (self.registers[args[2]] or 1))
+        elif op == 'CMP':
+            self.context['cmp'] = (self.registers[args[0]] == self.registers[args[1]])
+        elif op == 'JMP_IF':
+            if self.context.get('cmp'):
+                self.ip = args[0]
+        elif op == 'PRINT':
+            print(f"[{self.name}] PRINT:", self.registers[args[0]])
+        elif op == 'INPUT':
+            val = int(input(f"[{self.name}] INPUT: "))
+            self.registers[args[0]] = val
+        elif op == 'SLEEP':
+            import time; time.sleep(args[0])
+        elif op == 'EVENT':
+            if 'events' not in self.context:
+                self.context['events'] = []
+            self.context['events'].append({'name': args[0], 'data': args[1]})
 
     def snapshot(self):
         return {

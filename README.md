@@ -1,89 +1,70 @@
-# ?? Jarvis-COS Minimal
-> Минималистская версия искусственного интеллекта Jarvis-COS, предназначенная для локального запуска, обучения и расширения.
+# Jarvis-Virtual-COS
 
-## Quick Start
+**.**
 
-### Шаг 1: Клонирование репозитория
-```bash
-git clone https://github.com/KHUSHVAKHT175/Jarvis-COS.git
-cd Jarvis-COS-Minimal
-Шаг 2: Установка зависимостей
+---
+## ЁЯЪА Quick Start
 
-pip install -r requirements.txt
-Шаг 3: Запуск основной программы
-
-python src/main.py
-Пример вывода в терминале
-csharp
-
-[INFO] Jarvis-COS initialized.
-[INFO] Loading core modules...
-[INFO] System ready. Awaiting commands.
-Ключевые файлы и назначение
-Путь / Файл	Назначение
-src/main.py	Точка входа, управление модулями
-src/core/process_core.py	Управление процессами
-src/core/memory_engine.py	Память и обработка данных
-src/core/command_parser.py	Разбор команд
-src/core/scheduler.py	Планировщик задач
-src/core/security_shell.py	Безопасность
-src/core/system_log.py	Логирование
-src/modules/dialog_engine.py	Диалог с пользователем
-src/modules/logic_i1i2.py	Логика, мышление
-src/modules/field_engine.py	Поле восприятия (stub)
-src/modules/intuition_layer.py	Интуиция (stub)
-src/modules/vision_adapter.py	Обработка визуальных данных
-tests/test_core.py	Модуль тестов
-
-Тестирование
-Запуск тестов
-
-pytest tests/test_core.py
-Ожидаемый результат
-============================= test session starts =============================
-collected 5 items
-
-tests/test_core.py .....                                                  [100%]
-
-============================== 5 passed in 0.12s ==============================
-FAQ
-Как добавить новый модуль?
-Создайте файл в папке src/modules/.
-
-Добавьте регистрацию модуля в src/main.py или src/core/process_core.py.
-
-Как сделать pull-request?
-Форкните репозиторий.
-
-Создайте новую ветку: git checkout -b feature/имя_фичи
-
-Сделайте коммиты и пуш: git push origin feature/имя_фичи
-
-Создайте Pull Request через GitHub.
-
-Куда писать баги/предложения?
-Используйте раздел Issues на GitHub.
-
-
-cd Jarvis-COS
+git clone https://github.com/KHUSHVAKHT175/Jarvis-Virtual-COS.git
+cd Jarvis-Virtual-COS
 pip install -r requirements.txt
 python src/main.py
-```
---- 
-## ?? Project Structure
---- 
-## ?? Example Commands
-```bash
-Jarvis-COS
-Jarvis-COS
-Jarvis-COS
-Jarvis-COS
-```
---- 
-## ?? Requirements
+
+text
+undefined
+---
+
+## ЁЯУВ ╨б╤В╤А╤Г╨║╤В╤Г╤А╨░ ╨┐╤А╨╛╨╡╨║╤В╨░
+
+| ╨Я╤Г╤В╤М / ╨д╨░╨╣╨╗                         | ╨Э╨░╨╖╨╜╨░╤З╨╡╨╜╨╕╨╡                               |
+|--------------------------------------|------------------------------------------|
+| src/main.py                         | ╨в╨╛╤З╨║╨░ ╨▓╤Е╨╛╨┤╨░, ╨┐╤А╨╕╨╝╨╡╤А ╨╖╨░╨┐╤Г╤Б╨║╨░ тАЬ╨╝╨░╤В╤А╤С╤И╨╡╨║тАЭ   |
+| src/core/layer.py                   | ╨С╨░╨╖╨╛╨▓╤Л╨╣ ╨║╨╗╨░╤Б╤Б Layer                      |
+| src/core/layer_manager.py           | ╨Ь╨╡╨╜╨╡╨┤╨╢╨╡╤А ╤Г╨┐╤А╨░╨▓╨╗╨╡╨╜╨╕╤П ╤Б╨╗╨╛╤П╨╝╨╕               |
+| src/core/virtual_processor.py        | ╨Р╨▒╤Б╤В╤А╨░╨║╤В╨╜╤Л╨╣ ╨▓╨╕╤А╤В╤Г╨░╨╗╤М╨╜╤Л╨╣ ╨┐╤А╨╛╤Ж╨╡╤Б╤Б╨╛╤А         |
+| src/modules/example_module.py        | ╨Я╤А╨╕╨╝╨╡╤А ╤Б╨╗╨╛╤П ╤Б ╨┐╤А╨╛╤Ж╨╡╤Б╤Б╨╛╤А╨╛╨╝ (ProcessLayer) |
+| tests/                              | ╨Ь╨╛╨┤╤Г╨╗╤М╨╜╤Л╨╡ ╤В╨╡╤Б╤В╤Л                          |
+| requirements.txt                     | ╨б╨┐╨╕╤Б╨╛╨║ ╨╖╨░╨▓╨╕╤Б╨╕╨╝╨╛╤Б╤В╨╡╨╣                      |
+
+---
+
+## ЁЯзк ╨в╨╡╤Б╤В╨╕╤А╨╛╨▓╨░╨╜╨╕╨╡
+
+pytest
+
+text
+
+---
+
+## тЭУ FAQ
+
+**╨Ъ╨░╨║ ╨┤╨╛╨▒╨░╨▓╨╕╤В╤М ╨╜╨╛╨▓╤Л╨╣ ╤Б╨╗╨╛╨╣ (Layer)?**  
+╨б╨╛╨╖╨┤╨░╨╣╤В╨╡ ╨║╨╗╨░╤Б╤Б-╨┐╨╛╤В╨╛╨╝╨╛╨║ Layer, ╤А╨╡╨░╨╗╨╕╨╖╤Г╨╣╤В╨╡ ╨╝╨╡╤В╨╛╨┤ process.  
+╨Ч╨░╤А╨╡╨│╨╕╤Б╤В╤А╨╕╤А╤Г╨╣╤В╨╡ ╤Б╨╗╨╛╨╣ ╤З╨╡╤А╨╡╨╖ LayerManager ╨▓ main.py.
+
+**╨Ъ╨░╨║ ╤А╨░╤Б╤И╨╕╤А╨╕╤В╤М ╨┐╤А╨╛╤Ж╨╡╤Бc╨╛╤А?**  
+╨Ф╨╛╨▒╨░╨▓╤М╤В╨╡ ╨╜╤Г╨╢╨╜╤Л╨╡ ╨╛╨┐╨║╨╛╨┤╤Л ╨▓ process_instruction ╨║╨╗╨░╤Б╤Б╨░ VirtualProcessor.  
+╨Ь╨╛╨╢╨╜╨╛ ╤А╨╡╨░╨╗╨╕╨╖╨╛╨▓╨░╤В╤М ╤Б╨▓╨╛╨╣ ╨┐╤А╨╛╤Ж╨╡╤Б╤Б╨╛╤А тАФ ╨╜╨░╤Б╨╗╨╡╨┤╨╜╨╕╨║ VirtualProcessor.
+
+**╨У╨┤╨╡ ╨┐╨╕╤Б╨░╤В╤М ╨▒╨░╨│╨╕ ╨╕ ╨┐╤А╨╡╨┤╨╗╨╛╨╢╨╡╨╜╨╕╤П?**  
+╨б╨╛╨╖╨┤╨░╨╣╤В╨╡ Issue ╨╜╨░ GitHub ╨╕╨╗╨╕ ╨┐╨╕╤И╨╕╤В╨╡ ╨╜╨░ ╨┐╨╛╤З╤В╤Г ╨░╨▓╤В╨╛╤А╨░.
+
+---
+
+## ЁЯУЛ ╨в╤А╨╡╨▒╨╛╨▓╨░╨╜╨╕╤П
+
 - Python 3.9+
 - Git
 - pip
---- 
-## ?? License
-MIT License c KHUSHVAKHT
+
+---
+
+## тЪЦя╕П ╨Ы╨╕╤Ж╨╡╨╜╨╖╨╕╤П
+
+MIT License ┬й KHUSHVAKHT
+
+---
+
+## About
+
+[translate:╨д╤Г╨╜╨┤╨░╨╝╨╡╨╜╤В╨░╨╗╤М╨╜╨░╤П ╤А╨╡╨░╨╗╨╕╨╖╨░╤Ж╨╕╤П ╨╕╨┤╨╡╨╣ ╨╝╨╜╨╛╨│╨╛╤Б╨╗╨╛╨╣╨╜╨╛╨╣ ╨▓╨╕╤А╤В╤Г╨░╨╗╨╕╨╖╨░╤Ж╨╕╨╕ (тАЬ╨а╤Г╤Б╤Б╨║╨░╤П ╨╝╨░╤В╤А╤С╤И╨║╨░тАЭ) ╨╕ ╨▓╨╕╤А╤В╤Г╨░╨╗╨╕╨╖╨░╤Ж╨╕╨╕ ╨┐╤А╨╛╤Ж╨╡╤Б╤Б╨╛╤А╨╜╨╛╤Б╤В╨╕ ╨┤╨╗╤П ╨▓╨╕╤А╤В╤Г╨░╨╗╤М╨╜╨╛╨│╨╛ ╨Ш╨Ш]
