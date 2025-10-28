@@ -8,9 +8,10 @@ if __name__ == "__main__":
     lm.add_layer(outer)
     lm.add_layer(inner)
 
-    print("Тест: процессороёмкая задача — сумма квадратов N чисел.")
-    result = lm.run_all(None)  # None — вход не нужен для теста
+    print("Virtual-COS: демонстрация многослойности, виртуализации и когнитивного выбора ОС.")
 
-    print(f"\nФинальный результат через VM: {result}")
-    print("\nСнимок состояния:")
-    print(lm.snapshot_all())
+    result = lm.run_all(None)
+    print("\nИтог вычислений:", result)
+    print("\nСостояние слоёв и логи:")
+    for snapshot in lm.snapshot_all():
+        print(snapshot)
