@@ -1,20 +1,19 @@
 class App:
     def __init__(self):
-        self.name = "update"  # заменить на соответствующее имя для каждого файла
+        self.name = "update"
+        self.updated = False
 
-    def run(self, *args):
-        print(f"App {self.name}: запуск с аргументами {args}")
-        # здесь реализация функционала
+    def run(self):
+        self.updated = True
+        print("[update] Обновление системы завершено.")
 
     def status(self):
-        return f"App {self.name}: готов к работе."
+        return "[update] Статус: Обновлено." if self.updated else "[update] Статус: Требуется обновление."
 
     def get_context(self):
-        return {"name": self.name, "status": self.status()}
+        return {"name": self.name, "status": self.status(), "updated": self.updated}
 
-# Для теста "по месту":
 if __name__ == "__main__":
     app = App()
     app.run()
     print(app.status())
-    print(app.get_context())

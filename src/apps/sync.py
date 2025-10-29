@@ -1,20 +1,19 @@
 class App:
     def __init__(self):
-        self.name = "sync"  # заменить на соответствующее имя для каждого файла
+        self.name = "sync"
+        self.synced = False
 
-    def run(self, *args):
-        print(f"App {self.name}: запуск с аргументами {args}")
-        # здесь реализация функционала
+    def run(self):
+        self.synced = True
+        print("[sync] Система синхронизирована.")
 
     def status(self):
-        return f"App {self.name}: готов к работе."
+        return "[sync] Статус: Синхронизирован." if self.synced else "[sync] Статус: Ожидание синхронизации."
 
     def get_context(self):
-        return {"name": self.name, "status": self.status()}
+        return {"name": self.name, "status": self.status(), "synced": self.synced}
 
-# Для теста "по месту":
 if __name__ == "__main__":
     app = App()
     app.run()
     print(app.status())
-    print(app.get_context())

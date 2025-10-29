@@ -1,20 +1,21 @@
 class App:
     def __init__(self):
-        self.name = "settings"  # заменить на соответствующее имя для каждого файла
+        self.name = "settings"
+        self.config = {"max_load":0.8, "snapshot_freq":5}
 
-    def run(self, *args):
-        print(f"App {self.name}: запуск с аргументами {args}")
-        # здесь реализация функционала
+    def run(self, key=None, value=None):
+        if key and value is not None:
+            self.config[key] = value
+            print(f"[settings] Параметр {key} изменён на {value}")
+        print(f"[settings] Текущий конфиг: {self.config}")
 
     def status(self):
-        return f"App {self.name}: готов к работе."
+        return f"[settings] Текущие параметры: {self.config}"
 
     def get_context(self):
-        return {"name": self.name, "status": self.status()}
+        return {"name": self.name, "status": self.status(), "config": self.config}
 
-# Для теста "по месту":
 if __name__ == "__main__":
     app = App()
+    app.run("max_load",0.6)
     app.run()
-    print(app.status())
-    print(app.get_context())

@@ -1,20 +1,24 @@
 class App:
     def __init__(self):
-        self.name = "logview"  # заменить на соответствующее имя для каждого файла
+        self.name = "logview"
+        self.logs = []
 
-    def run(self, *args):
-        print(f"App {self.name}: запуск с аргументами {args}")
-        # здесь реализация функционала
+    def run(self, log=None):
+        if log:
+            self.logs.append(log)
+            print(f"[logview] Добавлен лог: {log}")
+        else:
+            print(f"[logview] Просмотр логов:")
+            for idx, l in enumerate(self.logs):
+                print(f"{idx+1}: {l}")
 
     def status(self):
-        return f"App {self.name}: готов к работе."
+        return f"[logview] Логов накоплено: {len(self.logs)}"
 
     def get_context(self):
-        return {"name": self.name, "status": self.status()}
+        return {"name": self.name, "status": self.status(), "logs": self.logs}
 
-# Для теста "по месту":
 if __name__ == "__main__":
     app = App()
+    app.run("Ошибка ядра Layer-2")
     app.run()
-    print(app.status())
-    print(app.get_context())

@@ -1,20 +1,20 @@
 class App:
     def __init__(self):
-        self.name = "monitor"  # заменить на соответствующее имя для каждого файла
+        self.name = "monitor"
+        self.stats = {}
 
-    def run(self, *args):
-        print(f"App {self.name}: запуск с аргументами {args}")
-        # здесь реализация функционала
+    def run(self, stats):
+        print(f"[monitor] Сбор статистики: {stats}")
+        self.stats.update(stats)
+        print(f"[monitor] Актуальные метрики: {self.stats}")
 
     def status(self):
-        return f"App {self.name}: готов к работе."
+        return f"[monitor] Мониторинг активен, {len(self.stats)} метрик."
 
     def get_context(self):
-        return {"name": self.name, "status": self.status()}
+        return {"name": self.name, "status": self.status(), "stats": self.stats}
 
-# Для теста "по месту":
 if __name__ == "__main__":
     app = App()
-    app.run()
+    app.run({"load":0.5, "errors":2})
     print(app.status())
-    print(app.get_context())
