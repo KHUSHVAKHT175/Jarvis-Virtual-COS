@@ -1,14 +1,14 @@
 Virtual-COS: демонстрация многослойности, виртуализации и когнитивного выбора ОС.
 Python native: result = 333328333350000, time = 0.010 сек
 [OuterLayer_vproc] PRINT: 333328333350000
-[OuterLayer_vproc] Реальное время: 0.150 сек
+[OuterLayer_vproc] Реальное время: 0.157 сек
 [OuterLayer_vproc] Виртуальное время: 1300003 тактов
-Jarvis VM: result = 333328333350000, real time = 0.150 сек, virtual time = 1300003 тактов
+Jarvis VM: result = 333328333350000, real time = 0.157 сек, virtual time = 1300003 тактов
 Python native: result = 333328333350000, time = 0.007 сек
 [InnerLayer_vproc] PRINT: 333328333350000
-[InnerLayer_vproc] Реальное время: 0.160 сек
+[InnerLayer_vproc] Реальное время: 0.153 сек
 [InnerLayer_vproc] Виртуальное время: 1300003 тактов
-Jarvis VM: result = 333328333350000, real time = 0.160 сек, virtual time = 1300003 тактов
+Jarvis VM: result = 333328333350000, real time = 0.153 сек, virtual time = 1300003 тактов
 
 Итог вычислений: [333328333350000, 333328333350000]
 
