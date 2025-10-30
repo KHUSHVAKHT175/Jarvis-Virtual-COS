@@ -1,73 +1,104 @@
-import importlib
-import os
-from decimal import Decimal
+"""
+main.py — Ядро Jarvis Virtual-COS
+ОС с когнитивными мета-слоями и самообучением
 
-# --- Концепция многослойной виртуализации ("матрёшка") Virtual-COS ---
-from src.core.layer_manager import LayerManager
-from src.modules.example_module import ProcessLayer
+Философия:
+- Многослойное управление (архитектура “матрёшка”)
+- Meta-поля для осознанности (намерение, время, баланс)
+- Каждый слой независим, однако влияет на общее поведение
+- Прозрачная логика самообучения, логирования, мониторинга
+"""
 
-lm = LayerManager()
-outer = ProcessLayer("OuterLayer")
-inner = ProcessLayer("InnerLayer")
-lm.add_layer(outer)
-lm.add_layer(inner)
+# --- Импорт системных приложений ---
+from apps.demo_selflearn import App as DemoSelfLearn
+from apps.event import App as EventApp
+from apps.logview import App as LogView
+from apps.monitor import App as MonitorApp
+from apps.settings import App as SettingsApp
+from apps.sync import App as SyncApp
+from apps.update import App as UpdateApp
 
-print("Virtual-COS: демонстрация многослойности, виртуализации и когнитивного выбора ОС.")
-result = lm.run_all(None)
-print("\nИтог вычислений:", result)
-print("\nСостояние слоёв и логи:")
-for snapshot in lm.snapshot_all():
-    print(snapshot)
+# --- Импорт мета-слоёв смыслового управления ---
+from meta.field7d import Field7D_Intent
+from meta.field11d import Field11D_TimeRewriter
+from meta.field15d import Field15D_Core
 
-# --- Интеграция приложений через AppManager ---
-from src.core.app_manager import AppManager
+# --- Эмуляция исполнительных структур I1, I2 ---
+class I1Stub:
+    goal_mode = "normal"
+    def restore_from_state(self, state):
+        print(f"[I1] Реставрация состояния: {state}")
+    def log(self, msg):
+        print(f"[I1] {msg}")
 
-am = AppManager()
-am.discover_apps()
-print("\nVirtual-COS: список штатных приложений")
-print(am.list_apps())
-print("Запуск калькулятора:")
-am.run_app("calc", 2, 3)
-print("Запуск редактора:")
-am.run_app("edit", "example.txt", "Это тестовая запись в файл для Virtual-COS.")
-am.run_app("edit", "example.txt")
-print("Статус проводника:")
-print(am.status("fexplorer"))
+class I2Stub:
+    repair_mode = False
+    errors = 0
+    def log(self, msg):
+        print(f"[I2] {msg}")
 
-# --- Адаптация, прозрачность, обратная связь (главная философия) ---
-N = 50
-history = []
-max_load = 0.8
+I1 = I1Stub()
+I2 = I2Stub()
 
-for i in range(N):
-    print(f"\n--- Адаптивный цикл самообучения #{i+1} ---")
-    # Динамическая нагрузка для реалистичной картины
-    load = Decimal(str(round(0.6 + i * 0.006 + (i % 7) * 0.005, 3)))
-    errors = int(max(0, (float(load) - max_load) * 10))
-    am.run_app("monitor", {"load": float(load), "errors": errors, "active_layers": 2})
+# --- Инициализация Meta-слоёв ---
+field7d = Field7D_Intent()
+field11d = Field11D_TimeRewriter()
+field15d = Field15D_Core([field7d, field11d])
 
-    # Обратная связь: если ошибок много — max_load понижается, если нет — повышается
-    if errors > 2:
-        max_load = round(max_load - 0.02, 3)
-        am.run_app("event", f"Перегрузка, max_load уменьшен до {max_load}")
-    elif errors == 0 and i > 0:
-        max_load = round(min(max_load + 0.01, 0.95), 3)
-        am.run_app("event", f"Успех, max_load увеличен до {max_load}")
+# --- Инициализация приложений Ядра ОС ---
+demo = DemoSelfLearn()
+event_mgr = EventApp()
+logviewer = LogView()
+monitor = MonitorApp()
+settings = SettingsApp()
+sync = SyncApp()
+update = UpdateApp()
 
-    am.run_app("settings", "max_load", max_load)
+# --- Основной цикл ОС ---
+def main_loop():
+    print("🧠 Jarvis Virtual-COS запущен.")
+    print("--- Мета-уровни подключены: 7D, 11D, 15D ---")
+    print("Система управляет процессами через смысловые поля и самообучение.")
 
-    # Логирование истории для прозрачности анализа
-    session = {"step": i+1, "load": float(load), "max_load": max_load, "errors": errors}
-    history.append(session)
-    am.run_app("logview", f"Сессия #{i+1}: нагрузка={float(load)}, max_load={max_load}, ошибок={errors}")
-    am.run_app("demo_selflearn", f"Адаптивный обучающий цикл №{i+1}")
+    # Пример начального состояния системы
+    system_state = {"load": 0.82, "errors": 1}
+    
+    # --- Метаслои ощущают и влияют на процессы ---
+    field7d.sense(system_state)
+    intent_vector = field7d.influence(I1, I2)
+    field11d.record(system_state)
+    core_state = field15d.evaluate()
+    field15d.broadcast()
+    
+    # --- Работа системных приложений ---
+    monitor.run(system_state)
+    demo.run("Тест нагрузки")
+    demo.run()
+    event_mgr.run("Запуск мониторинга")
+    event_mgr.run()
 
-    # Автоматическая остановка при достижении устойчивого успеха (главный критерий сходимости)
-    if len(history) >= 5 and all(h["errors"] == 0 for h in history[-5:]):
-        print(f"\n[STOP] Самообучение завершено на {i+1} цикле — стабильность и качество достигнуты!")
-        break
+    logviewer.run("Ядро стартовало, нагрузка: 0.82, ошибок: 1")
+    logviewer.run()
 
-print("\n--- Самообучение завершено ---")
-am.run_app("logview")
-am.run_app("settings")
-am.run_app("demo_selflearn")
+    settings.run("max_load", 0.85)
+    settings.run()
+
+    sync.run()
+    update.run()
+
+    # --- Эмуляция события ошибки и действия мета-слоя времени ---
+    I2.errors = 4
+    system_state["errors"] = I2.errors
+    field11d.record(system_state)
+    field11d.rewrite(I1, I2)
+    logviewer.run(f"Обработка ошибок, текущих: {I2.errors}")
+    logviewer.run()
+
+    # --- Итог состояния ----
+    core_state = field15d.evaluate()
+    field15d.broadcast()
+
+    print("--- Основной цикл завершён ---")
+
+if __name__ == "__main__":
+    main_loop()
