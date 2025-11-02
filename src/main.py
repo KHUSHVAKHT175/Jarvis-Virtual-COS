@@ -50,7 +50,14 @@ def adapt_7d(field, intent, result):
         field.energy -= 0.01
     field.energy = max(0, min(field.energy, 1))
     print(f"[7D] Энергия смыслового поля: {old_energy:.2f} → {field.energy:.2f}")
+from orchestrator import Orchestrator
 
+def main():
+    orchestrator = Orchestrator()  # теперь без аргументов
+    orchestrator.run()
+
+if __name__ == "__main__":
+    main()
 # --- Файловый обмен ---
 def read_file(path):
     with open(path, 'r', encoding='utf-8') as f: return f.read()

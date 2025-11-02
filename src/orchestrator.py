@@ -1,6 +1,6 @@
-# src/core/orchestrator.py (или main.py)
+# src/orchestrator.py (или main.py)
 
-from modules.module_list import module_registry, age_requirements
+from modules.module_list import module_registry  # убрали age_requirements
 
 class HybridMemory:
     def __init__(self):
@@ -22,40 +22,25 @@ class HybridMemory:
             return self.archive[key]
         return None
 
-# функция для динамического импорта разрешённых модулей
-def load_allowed_modules(user_age):
-    allowed = {}
-    for name, path in module_registry.items():
-        if user_age >= age_requirements.get(name, 0):
+class Orchestrator:
+    def __init__(self):
+        self.modules = self.load_allowed_modules()
+        self.memory = HybridMemory()
+
+    def load_allowed_modules(self):
+        allowed = {}
+        for name, path in module_registry.items():
             allowed[name] = __import__(path, fromlist=[""])
-    return allowed
+        return allowed
 
-# основная инициализация системы
-def main():
-    user_age = int(input("Введите возраст пользователя: "))
-    modules = load_allowed_modules(user_age)
-    memory = HybridMemory()
+    def run(self):
+        print(f"Доступные модули: {list(self.modules.keys())}")
 
-    print(f"Доступные модули: {list(modules.keys())}")
+        if "AutoWeights" in self.modules:
+            print("[Orchestrator] Автоподстройка весов памяти...")
+            self.modules["AutoWeights"].night_optimize_weights(self.memory)
+            print(f"Веса памяти: {self.memory.weights}")
 
-    # Пример автоподстройки (если модуль разрешён)
-    if "AutoWeights" in modules:
-        print("[Orchestrator] Автоподстройка весов памяти...")
-        modules["AutoWeights"].night_optimize_weights(memory)
-        print(f"Веса памяти: {memory.weights}")
-
-    # Ночной когнитивный цикл (если модуль разрешён)
-    if "NightOptimizer" in modules:
-        print("[Orchestrator] Запуск NightOptimizer")
-        modules["NightOptimizer"].run_night_cycle(memory, active=True)
-
-    # Дополнительно — запуск других модулей по необходимости
-    # if "SensorManager" in modules:
-    #     modules["SensorManager"].scan_sensors()
-
-    # if "LanguageModel" in modules:
-    #     user_query = input("Введи вопрос для LanguageModel: ")
-    #     print("Ответ:", modules["LanguageModel"].respond(user_query))
-
-if __name__ == "__main__":
-    main()
+        if "NightOptimizer" in self.modules:
+            print("[Orchestrator] Запуск NightOptimizer")
+            self.modules["NightOptimizer"].run_night_cycle(self.memory, active=True)
