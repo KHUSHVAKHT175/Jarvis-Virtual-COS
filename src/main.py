@@ -187,6 +187,11 @@ def heartbeat_loop():
         HEARTBEAT['count'] += 1
         HEARTBEAT['last'] = time()
         sleep(5)
+from orchestrator import Orchestrator
+
+def main():
+    orchestrator = Orchestrator()
+    orchestrator.run()
 
 if __name__ == "__main__":
     threading.Thread(target=tcp_server, daemon=True).start()
