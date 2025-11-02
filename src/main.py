@@ -141,6 +141,24 @@ def home():
 
     log_html = "<br>".join(LOGS[-26:])
     html = f"""
+    <h2>Конструктор запросов</h2>
+    <form method="post" action="/">
+      <label for="action">Действие:</label>
+      <select name="action_type" id="action" required>
+      <option value="">Выберите...</option>
+      <option value="status">Показать статус</option>
+      <option value="set_goal">Установить цель</option>
+      <option value="associate">Создать ассоциацию</option>
+      <option value="analyze">Анализ темы</option>
+      <option value="clear">Очистить сессию</option>
+      <option value="help">Помощь</option>
+      </select><br><br>
+
+      <label for="topic">Тема (если применимо):</label>
+      <input type="text" id="topic" name="topic" placeholder="Введите тему"><br><br>
+
+      <button type="submit" name="submit" value="build_request">Применить</button>
+    </form>
     <h1>Jarvis Virtual-COS</h1>
     <form method="post">
         <input name="command" placeholder="Ввести команду" autofocus>
@@ -157,39 +175,14 @@ def home():
     """
     return html
 
-def run_web_panel():
-    web_panel.run(port=8080)
-
-# --- Основной когнитивный цикл ---
-def core_loop():
-    ui = UserInterface(log_ref=LOGS)
-    print("\n🧠 Jarvis Virtual-COS: когнитивный цикл жизни и самообучения!")
-    print("--- Многоуровневая память, meta-уровни, ассоциации, пульс ---")
-    write_file("hello.txt", "Привет, Jarvis!")
-    append_file("hello.txt", "Еще строка.")
+def heartbeat_loop():
     while True:
-        try:
-            cmd = ui.get_command()
-            file_cmds = fetch_commands()
-            if not cmd and file_cmds:
-                cmd = file_cmds[0]
-            if cmd:
-                memory.add(cmd, context={"console": True})
-                I1.set_goal(f"Выполняем: {cmd}")
-                result = ui.process(cmd, memory)
-                adapt_7d(field7d, cmd, result)
-                I1.feedback(result, memory)
-                I2.observe(I1.goal)
-                LOGS.append(f"[main] {result} | Энергия смыслов: {getattr(field7d, 'energy',0.5):.2f}")
-            HEARTBEAT["count"] += 1
-            HEARTBEAT["last"] = time()
-            sleep(0.3)
-        except KeyboardInterrupt:
-            print("\nJarvis остановлен. Сессия завершена.")
-            break
+        HEARTBEAT['count'] += 1
+        HEARTBEAT['last'] = time()
+        sleep(5)
 
 if __name__ == "__main__":
     threading.Thread(target=tcp_server, daemon=True).start()
     threading.Thread(target=run_http_api, daemon=True).start()
-    threading.Thread(target=run_web_panel, daemon=True).start()
-    core_loop()
+    threading.Thread(target=heartbeat_loop, daemon=True).start()
+    web_panel.run(port=8000)
