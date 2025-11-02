@@ -1,5 +1,9 @@
 # src/orchestrator.py (или main.py)
 
+import os
+import json
+import random
+import time  # обязательно для timestamp
 from modules.module_list import module_registry  # убрали age_requirements
 from modules.reward_system import RewardSystem
 from modules.curiosity_module import CuriosityModule
@@ -31,7 +35,7 @@ class Orchestrator:
 
         # --- Мотивационные модули ---
         from motivation.reward_system import RewardSystem
-        from motivation.curiosity import CuriosityModule
+        from motivation.curiosity_module import CuriosityModule
         from motivation.goal_setter import GoalSetter
 
         self.reward_system = RewardSystem()
@@ -80,8 +84,10 @@ class Orchestrator:
             "new_goals": new_goals,  
             "timestamp": time.time()
         }
-        self.memory["motivation_log"] = self.memory.get("motivation_log", [])
-        self.memory["motivation_log"].append(motivation_data)
+        motivation_log = self.memory.get("motivation_log") or []
+        motivation_log.append(motivation_data)
+        self.memory.store({"name": "motivation_log"}, motivation_log)
+        
         print("[Memory] Мотивационные данные сохранены в память.")
 
         # --- Коррекция весов ---
@@ -94,16 +100,19 @@ class Orchestrator:
                 curiosity=curiosity_level
             )
             # --- Логирование мотивационных параметров ---
+               
+            motivation_log = self.memory.get("motivation_log") or []
             log_line = (
-                f"[LOG] Reward={reward:.2f} | Curiosity={curiosity_level:.2f} | "
-                f"Goals={len(new_goals) if new_goals else 0} | "
-                f"Memory entries={len(self.memory.get('motivation_log', []))}"
+                f"[Log] Reward={reward:.2f} | Curiosity={curiosity_level:.2f} | Goals={new_goals} | "
+                f"Memory entries={len(motivation_log)}"
             )
             print(log_line)
 
             # сохраняем лог в память
-            self.memory["log"] = self.memory.get("log", [])
-            self.memory["log"].append({
+            if not hasattr(self.memory, "log"):
+                self.memory.log = []
+
+            self.memory.log.append({
                 "timestamp": time.time(),
                 "reward": reward,
                 "curiosity": curiosity_level,
